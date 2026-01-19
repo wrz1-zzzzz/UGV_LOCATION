@@ -5,9 +5,9 @@
 核心框架基于 **FAST-LIO2** 进行高频里程计估计，实现**建图、定位、规划与可视化的集成**，解决了之前分步启动繁琐、参数割裂的问题。
 
 **主要特性 (Key Features)：**
-* **一键启动 (All-in-One)**：单指令启动三维定位、地图服务、路径规划（MoveBase）与 RViz 可视化。
-* **极简交互 (Minimalist Interaction)**：仅需给定初始位姿与目标点，即可实现从定位到规划的全自动闭环。
-* **地图闭环**：支持点云地图（PCD）的自动加载与 2D 栅格地图转换（Runtime）。
+* 单指令启动三维定位、地图服务、路径规划（MoveBase）与 RViz 可视化。
+* 仅需给定初始位姿与目标点，即可实现定位到规划。
+* 支持点云地图（PCD）的自动加载与 实时2D 栅格地图转换。
 
 ## 🛠️ 依赖环境 (Prerequisites)
 
@@ -25,6 +25,7 @@
 ```bash
 roslaunch fast_lio mapping_mid360.launch
 ```
+### 2. 导航 (Navigation)
 ```bash
 roslaunch fast_lio_location localization_MID360.launch
 ```
