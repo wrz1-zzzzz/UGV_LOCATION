@@ -1,0 +1,32 @@
+<launch>
+    <arg name="pcd_path" default="/home/axy/nav_ws/src/sentry_slam/FAST_LIO/PCD/scans.pcd" />
+    <arg name="fastlio_cloud_topic" default="/cloud_registered" />
+    
+    <arg name="ceiling_height" default="1.5" />
+
+    <node pkg="pcl_ros" type="pcd_to_pointcloud" name="map_loader_node" args="$(arg pcd_path) 2.0" output="screen">
+        <param name="frame_id" value="map" />
+        <remap from="cloud_pcd" to="/map_raw" />
+    </node>
+
+    <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen" />
+
+    <node pkg="nodelet" type="nodelet" name="ceiling_filter" args="load pcl/PassThrough pcl_manager" output="screen">
+        <remap from="~input" to="/map_raw" />
+        <remap from="~output" to="/rtabmap/cloud_map" />
+
+        <rosparam subst_value="true">
+            filter_field_name: z
+            filter_limit_min: -5.0
+            filter_limit_max: $(arg ceiling_height)
+            filter_limit_negative: False
+        </rosparam>
+    </node>
+
+    <node pkg="topic_tools" type="relay" name="lidar_data_relay" args="$(arg fastlio_cloud_topic) /output_filter" />
+
+    <node pkg="tf" type="static_transform_publisher" name="map_to_camera_init" args="0 0 0 0 0 0 map camera_init 50" />
+
+    <node pkg="tf" type="static_transform_publisher" name="body_to_base_link" args="0 0 0 0 0 0 body base_link 50" />
+
+</launch>

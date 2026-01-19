@@ -1,0 +1,51 @@
+DWAPlannerROS:
+# --- 速度限制 (通用小车) ---
+  max_vel_x: 0.3          # 最大直行速度 (0.5 m/s 比较安全)
+  min_vel_x: -0.2         # 【修改点】允许倒车！(负数表示向后退)
+
+  max_vel_y: 0.3          # 【注意】普通小车不能横着走，所以Y轴速度必须是0
+  min_vel_y: -0.2
+
+  max_vel_trans: 0.3      # 机器人最大综合速度
+  min_vel_trans: 0.1      # 机器人最小综合速度 (防止电机死区不动)
+
+  max_vel_theta: 1.5      # 最大旋转速度 (普通小车转弯可以快点)
+  min_vel_theta: 0.2      # 最小旋转速度
+
+# --- 加速度限制 ---
+  acc_lim_x: 2.5          # X轴加速度 (普通电机响应快，可以设大点)
+  acc_lim_y: 0.0          # Y轴无加速度
+  acc_lim_theta: 3.2      # 旋转加速度
+
+# --- 目标点误差 ---
+  xy_goal_tolerance: 0.15 # 允许 15cm 的误差
+  yaw_goal_tolerance: 0.1 # 允许 0.1弧度 (约5度) 的角度误差
+  latch_xy_goal_tolerance: false # 到达后是否锁定，设false方便调整位置
+
+# --- 正向模拟参数 (DWA核心) ---
+  sim_time: 1.7           # 向前预判 1.7秒 (标准值)
+  vx_samples: 20          # x方向速度采样
+  vy_samples: 0           # 【注意】普通小车Y方向不用采样 (因为不能横移)
+  vtheta_samples: 40      # 旋转采样
+
+# --- 轨迹评分权重 (标准权重) ---
+  path_distance_bias: 32.0 # 尽量走全局路径
+  goal_distance_bias: 24.0 # 尽量向目标靠近
+  occdist_scale: 0.01      # 避障权重 (0.01-0.05之间)
+  forward_point_distance: 0.325 # 评分点距离机器人中心的距离
+  stop_time_buffer: 0.2    # 停车缓冲时间
+
+# --- 纠结防抖动 ---
+  scaling_speed: 0.25      # 速度小于这个值时，开始缩放footprint
+  max_scaling_factor: 0.2  # 最大缩放比例
+
+# --- 震荡抑制 ---
+  oscillation_reset_dist: 0.05 # 机器人必须运动多少米，震荡标志才复位
+
+# --- 机器人类型 ---
+# 【重要】普通小车(差速车)也是 Non-holonomic (非全向)
+# 全向车(麦克纳姆轮)才是 true。普通车必须是 false，否则路径会很奇怪
+  holonomic_robot: false
+  publish_traj_pc: true
+  publish_cost_grid_pc: true
+  global_frame_id: map

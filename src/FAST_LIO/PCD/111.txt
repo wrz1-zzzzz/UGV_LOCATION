@@ -1,0 +1,3 @@
+rosrun map_server map_saver map:=/projected_map -f /home/axy/nav_ws/src/sentry_slam/FAST_LIO/PCD/scans
+
+rosrun fast_lio_localization publish_initial_pose.py 0 0 0 0 0 0

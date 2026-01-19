@@ -1,0 +1,37 @@
+<launch>
+    <node pkg="pointcloud_to_laserscan" type="pointcloud_to_laserscan_node" name="pointcloud_to_laserscan">
+        <remap from="cloud_in" to="/cloud_registered"/>
+        <remap from="scan" to="/scan"/>
+        
+        <rosparam>
+            # 【重要】锁定在车体坐标系，防止爬坡时激光乱晃
+            target_frame: body 
+            transform_tolerance: 0.01
+
+            # 【建议修改】高度截取范围 (单位：米)
+            # 避开地面杂草和石子，只截取 0.3m 到 1.0m 高度的障碍物
+            min_height: 0.3
+            max_height: 1.0
+
+            # 角度范围 (全向)
+            angle_min: -3.14159 
+            angle_max: 3.14159 
+            angle_increment: 0.0087 
+            
+            # 【致命错误修正】扫描时间间隔
+            # 10.0 是错的！应该是 0.1 (10Hz)
+            scan_time: 0.1
+            
+            # 【建议修改】最小距离
+            # 防止扫到车体自身，设为 0.45 米比较安全
+            range_min: 0.45
+            range_max: 30.0
+            
+            use_inf: true
+            inf_epsilon: 1.0
+            
+            # 电脑性能好可以改大，1 是最稳的
+            concurrency_level: 1
+        </rosparam>
+    </node>
+</launch>

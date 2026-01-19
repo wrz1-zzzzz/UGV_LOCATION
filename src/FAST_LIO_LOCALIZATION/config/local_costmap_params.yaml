@@ -1,0 +1,14 @@
+local_costmap:
+  global_frame: map       # 局部规划也在 map 坐标系下运行 (配合 FAST-LIO)
+  robot_base_frame: body
+  update_frequency: 10.0  # 局部地图更新要快
+  publish_frequency: 10.0
+  static_map: false
+  rolling_window: true    # 它是滚动的，只关注车周围
+  width: 4.0              # 局部规划范围 4x4米 (林地环境复杂，小一点计算快)
+  height: 4.0
+  resolution: 0.05
+
+  plugins:
+    - {name: obstacle_layer,  type: "costmap_2d::ObstacleLayer"}
+    - {name: inflation_layer, type: "costmap_2d::InflationLayer"}

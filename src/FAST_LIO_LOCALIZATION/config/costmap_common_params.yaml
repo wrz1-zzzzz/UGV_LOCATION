@@ -1,0 +1,29 @@
+# --- 机器人形状 (简化版) ---
+# 删掉 footprint，只留这一行
+# 这里的 0.4 是半径 (米)。
+# 请确保这个圆能把你整个车包进去 (也就是：从IMU到车壳最远那个角的距离)
+robot_radius: 0.1
+
+
+# --- 2. 障碍物层 (关键修改！) ---
+# 必须加上 obstacle_layer: 这个头，因为你在 local/global yaml 里调用插件时名字叫 obstacle_layer
+obstacle_layer:
+  enabled: true
+  obstacle_range: 3.0
+  raytrace_range: 3.5
+  
+  # 【重点】observation_sources 必须缩进在 obstacle_layer 下面！
+  observation_sources: scan
+  scan: {
+    data_type: LaserScan, 
+    topic: /scan, 
+    marking: true, 
+    clearing: true,
+    expected_update_rate: 10.0
+  }
+
+# --- 3. 膨胀层 ---
+inflation_layer:
+  enabled: true
+  cost_scaling_factor: 5.0
+  inflation_radius: 0.25

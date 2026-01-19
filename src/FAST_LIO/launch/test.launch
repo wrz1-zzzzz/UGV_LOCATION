@@ -1,0 +1,18 @@
+<launch>
+    <arg name="pcd_path" default="/home/axy/nav_ws/src/sentry_slam/FAST_LIO/PCD/scans.pcd" />
+    
+    <arg name="fastlio_cloud_topic" default="/cloud_registered" />
+
+    <node pkg="pcl_ros" type="pcd_to_pointcloud" name="map_loader_node" args="$(arg pcd_path) 2.0" output="screen">
+        <param name="frame_id" value="map" />
+        <remap from="cloud_pcd" to="/rtabmap/cloud_map" />
+    </node>
+
+    <node pkg="topic_tools" type="relay" name="lidar_data_relay" args="$(arg fastlio_cloud_topic) /output_filter" />
+
+    <node pkg="tf" type="static_transform_publisher" name="map_to_camera_init" args="0 0 0 0 0 0 map camera_init 50" />
+
+    <node pkg="tf" type="static_transform_publisher" name="body_to_base_link" args="0 0 0 0 0 0 body base_link 50" />
+    
+
+</launch>

@@ -1,0 +1,55 @@
+<launch>
+<!-- Launch file for Livox MID360 LiDAR -->
+
+	<arg name="rviz" default="true" />
+	<arg name="use_sim_time" value="true"/>
+
+	<rosparam command="load" file="$(find fast_lio)/config/mid360.yaml" />
+
+	<param name="feature_extract_enable" type="bool" value="0"/>
+	<param name="point_filter_num" type="int" value="3"/>
+	<param name="max_iteration" type="int" value="3" />
+	<param name="filter_size_surf" type="double" value="0.5" />
+	<param name="filter_size_map" type="double" value="0.5" />
+	<param name="cube_side_length" type="double" value="1000" />
+	<param name="runtime_pos_log_enable" type="bool" value="0" />
+    <node pkg="fast_lio" type="fastlio_mapping" name="laserMapping" output="screen" /> 
+
+	<group if="$(arg rviz)">
+	<node launch-prefix="nice" pkg="rviz" type="rviz" name="rviz" args="-d $(find fast_lio)/rviz_cfg/loam_livox.rviz" />
+	</group>
+
+	<!-- Include child launch file -->
+	<!-- <include file="$(find fast_lio)/launch/Point2Map.launch">
+	</include> -->
+	<arg name="pcd_path" default="/home/axy/nav_ws/src/sentry_slam/FAST_LIO/PCD/scans.pcd" />
+    <arg name="fastlio_cloud_topic" default="/cloud_registered" />
+    
+    <arg name="ceiling_height" default="1.5" />
+
+    <node pkg="pcl_ros" type="pcd_to_pointcloud" name="map_loader_node" args="$(arg pcd_path) 2.0" output="screen">
+        <param name="frame_id" value="map" />
+        <remap from="cloud_pcd" to="/map_raw" />
+    </node>
+
+    <node pkg="nodelet" type="nodelet" name="pcl_manager" args="manager" output="screen" />
+
+    <node pkg="nodelet" type="nodelet" name="ceiling_filter" args="load pcl/PassThrough pcl_manager" output="screen">
+        <remap from="~input" to="/map_raw" />
+        <remap from="~output" to="/rtabmap/cloud_map" />
+
+        <rosparam subst_value="true">
+            filter_field_name: z
+            filter_limit_min: -5.0
+            filter_limit_max: $(arg ceiling_height)
+            filter_limit_negative: False
+        </rosparam>
+    </node>
+
+    <node pkg="topic_tools" type="relay" name="lidar_data_relay" args="$(arg fastlio_cloud_topic) /output_filter" />
+
+    <node pkg="tf" type="static_transform_publisher" name="map_to_camera_init" args="0 0 0 0 0 0 map camera_init 50" />
+
+    <node pkg="tf" type="static_transform_publisher" name="body_to_base_link" args="0 0 0 0 0 0 body base_link 50" />
+
+</launch>
