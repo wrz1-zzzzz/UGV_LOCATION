@@ -27,6 +27,7 @@ roslaunch fast_lio mapping_mid360.launch
 启动建图模式，控制机器人遍历目标区域，生成的 PCD 地图将自动保存。
 ```bash
 roslaunch fast_lio mapping_mid360.launch
+```bash
 roslaunch fast_lio_location localization_MID360.launch
 
 
