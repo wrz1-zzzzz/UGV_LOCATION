@@ -18,9 +18,6 @@
 * **PCL**: >= 1.8
 * **Eigen**: >= 3.3.7
 
-roslaunch fast_lio mapping_mid360.launch
-roslaunch fast_lio mapping_mid360.launch
-
 ## 🚀 快速开始 (Quick Start)
 
 ### 1. 建图 (Mapping)
