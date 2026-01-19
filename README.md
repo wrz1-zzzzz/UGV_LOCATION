@@ -5,6 +5,6 @@
 ```bash
 roslaunch fast_lio mapping_mid360.launch
 
-##2.导航
+###2.导航
 ```bash
 roslaunch fast_lio_location localization_MID360.launch
